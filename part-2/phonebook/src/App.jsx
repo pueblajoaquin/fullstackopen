@@ -67,6 +67,9 @@ const App = () => {
         setNewNumber('')
         editCurrentMessage(`Added ${personCreated.name}`)
       })
+      .catch(err => {
+        editCurrentMessage(err.response.data.error,'error')
+      })
   }
 
   const removePerson = id =>{
@@ -76,7 +79,8 @@ const App = () => {
       personServices
         .deletePerson(id)
         .then(personDeleted => {
-          setPersons(persons.filter(person => person.id !== personDeleted.id))
+          const newPersons = persons.filter(person => person.id !== personDeleted.id)
+          setPersons(newPersons)
           editCurrentMessage(`Deleted ${personDeleted.name}`)
         })
     }
