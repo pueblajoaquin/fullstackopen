@@ -30,12 +30,16 @@ blogRoutes.post('/', middleware.userExtractor, async (request, response) => {
   const blog = new Blog(newBlog)
 
   const savedBlog = await blog.save()
+  const populatedBlog = await savedBlog.populate('user', {
+    username: true,
+    name: true
+  })
 
   user.blogs = user.blogs.concat(savedBlog._id)
 
   await user.save()
 
-  return response.status(201).json(savedBlog)
+  return response.status(201).json(populatedBlog)
 })
 
 blogRoutes.delete('/:id', middleware.userExtractor, async (request, response) => {
