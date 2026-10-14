@@ -29,8 +29,7 @@ blogRoutes.post('/', middleware.userExtractor, async (request, response) => {
 
   const blog = new Blog(newBlog)
 
-  const savedBlog = await blog.save()
-  const populatedBlog = await savedBlog.populate('user', {
+  const savedBlog = await blog.save().populate('user', {
     username: true,
     name: true
   })
@@ -39,7 +38,7 @@ blogRoutes.post('/', middleware.userExtractor, async (request, response) => {
 
   await user.save()
 
-  return response.status(201).json(populatedBlog)
+  return response.status(201).json(savedBlog)
 })
 
 blogRoutes.delete('/:id', middleware.userExtractor, async (request, response) => {
