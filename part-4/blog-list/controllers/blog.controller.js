@@ -29,7 +29,9 @@ blogRoutes.post('/', middleware.userExtractor, async (request, response) => {
 
   const blog = new Blog(newBlog)
 
-  const savedBlog = await blog.save().populate('user', {
+  const savedBlog = await blog.save()
+
+  await savedBlog.populate('user', {
     username: true,
     name: true
   })
