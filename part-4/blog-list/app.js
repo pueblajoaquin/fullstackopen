@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import blogRoutes from './controllers/blog.controller.js'
 import userRouter from './controllers/user.controller.js'
 import loginRouter from './controllers/login.controller.js'
+import testRoutes from './controllers/testing.js'
 import dns from 'node:dns'
 import logger from './utils/logger.js'
 import middleware from './utils/middleware.js'
@@ -27,6 +28,10 @@ app.use(middleware.requestLogger)
 app.use('/api/login', loginRouter)
 app.use('/api/blogs', blogRoutes)
 app.use('/api/users', userRouter)
+
+if (process.env.NODE_ENV === 'test') {
+  app.use('/api/testing', testRoutes)
+}
 
 app.use(middleware.errorHandler)
 
