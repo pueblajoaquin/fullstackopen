@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 
 
-const Blog = ({ blog, handleLikeBlog, handleRemoveBlog }) => {
+const Blog = ({ blog, handleLikeBlog, handleRemoveBlog, user }) => {
   const [visible, setVisible] = useState(false)
 
   const blogStyle = {
@@ -31,7 +31,8 @@ const Blog = ({ blog, handleLikeBlog, handleRemoveBlog }) => {
 
           <li>user: {blog.user.username}</li>
 
-          <li><button onClick={() => handleRemoveBlog(blog)}>remove</button></li>
+          {user.username === blog.user.username && <li><button onClick={() => handleRemoveBlog(blog)}>remove</button></li>}
+
         </ul>
       ) : null}
     </div>

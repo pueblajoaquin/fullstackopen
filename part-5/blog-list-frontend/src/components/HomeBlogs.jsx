@@ -17,6 +17,7 @@ const HomeBlogs = ({ handleLogout, handleAddBlog, handleRemoveBlog, handleLikeBl
           <Blog
             key={blog.id}
             blog={blog}
+            user={user}
             handleLikeBlog={handleLikeBlog}
             handleRemoveBlog={handleRemoveBlog}
           />
