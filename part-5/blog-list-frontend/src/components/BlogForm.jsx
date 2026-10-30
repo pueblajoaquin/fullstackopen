@@ -1,16 +1,13 @@
-import { useState, useRef } from 'react'
-import Togglable from './Togglable'
+import { useState } from 'react'
 
 const BlogForm = ({ handleAddBlog }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
-  const blogFormRef = useRef()
 
   const createBlog = event => {
     event.preventDefault()
-    blogFormRef.current.changeVisibility()
     handleAddBlog({
       title,
       author,
@@ -22,7 +19,7 @@ const BlogForm = ({ handleAddBlog }) => {
   }
 
   return(
-    <Togglable buttonLabel = 'create new blog' ref={blogFormRef}>
+    <div>
       <h3>create new blog</h3>
       <form onSubmit={createBlog}>
         <label >
@@ -54,7 +51,7 @@ const BlogForm = ({ handleAddBlog }) => {
         </label>
         <button type='submit'>create</button>
       </form>
-    </Togglable>
+    </div>
   )
 
 }

@@ -1,14 +1,28 @@
 import { useState, useEffect } from 'react'
+import {
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+  useMatch
+} from 'react-router-dom'
 import LoginForm from './components/LoginForm'
 import HomeBlogs from './components/HomeBlogs'
+import BlogView from './components/BlogView'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
+  const navigate = useNavigate()
+  const blogMatch = useMatch('/blogs/:id')
+  const matchedBlog = blogMatch
+    ? blogs.find(b => b.id === blogMatch.params.id)
+    : null
 
 
   useEffect(() => {
@@ -36,6 +50,7 @@ const App = () => {
       setUser(user)
       blogService.setToken(user.token)
       showMessage(`successful login for ${user.username}`)
+      navigate('/')
     }catch (error){
       showMessage(error.response.data.error, 'error')
     }
@@ -46,6 +61,7 @@ const App = () => {
     window.localStorage.removeItem('userLogged')
     setUser(null)
     showMessage('closed session')
+    navigate('/')
   }
 
   const handleAddBlog = async ({ title, author, url }) => {
@@ -58,6 +74,7 @@ const App = () => {
       const blogCreated = await blogService.createBlog(newBlog)
       setBlogs(blogs.concat(blogCreated))
       showMessage(`a new blog ${blogCreated.title} by ${blogCreated.author} added`)
+      navigate('/')
     }catch (error){
       showMessage(error.response.data.error)
     }
@@ -69,6 +86,7 @@ const App = () => {
         await blogService.removeBlog(blog.id)
         const newBlogsWithoutDeleted = blogs.filter(b => b.id !== blog.id)
         setBlogs(newBlogsWithoutDeleted)
+        navigate('/')
       }catch(error){
         showMessage(error.response.data.error, 'error')
       }
@@ -102,16 +120,40 @@ const App = () => {
 
   return (
     <div>
+      <div>
+        <Link to="/">blogs</Link>
+        {user?
+          <>
+            <Link to="/create">new blog</Link>
+            <button onClick={handleLogout}>logout</button>
+          </>
+          : <Link to="/login">login</Link>
+        }
+      </div>
+
       <Notification message={message} />
-      {!user && (<LoginForm handleLogin={handleLogin}/>)}
-      {user && <HomeBlogs
-        blogs={blogs}
-        handleAddBlog={handleAddBlog}
-        handleRemoveBlog={handleRemoveBlog}
-        handleLikeBlog={handleLikeBlog}
-        handleLogout={handleLogout}
-        user={user}
-      />}
+
+      <Routes>
+        <Route path="/" element={
+          <HomeBlogs
+            blogs={blogs}
+          />
+        }/>
+        <Route path="/blogs/:id" element={
+          <BlogView
+            blog={matchedBlog}
+            user={user}
+            handleLikeBlog={handleLikeBlog}
+            handleRemoveBlog={handleRemoveBlog}
+          />
+        }/>
+        <Route path="/login" element={
+          <LoginForm handleLogin={handleLogin}/>
+        }/>
+        <Route path="/create" element={
+          <BlogForm handleAddBlog={handleAddBlog}/>
+        }/>
+      </Routes>
     </div>
   )
 }

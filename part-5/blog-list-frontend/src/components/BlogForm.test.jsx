@@ -11,9 +11,6 @@ describe('<BlogForm />', () => {
       handleAddBlog={handleAddBlog}
     />)
 
-    const buttonCreate = screen.getByRole('button', { name: 'create new blog' })
-    await user.click(buttonCreate)
-
     await user.type(screen.getByPlaceholderText('write blog title here'), 'blogs title')
     await user.type(screen.getByPlaceholderText('write blog author here'), 'testing')
     await user.type(screen.getByPlaceholderText('write blog url here'), 'test.com')
